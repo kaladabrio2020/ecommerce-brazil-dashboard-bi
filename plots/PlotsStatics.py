@@ -48,7 +48,7 @@ def LinePlotPedidos(data):
             x = data['data'],
             y = data['pedidos'],
             name = 'Série histórica',
-            hovertemplate='Série histórica<br> Data = %{x}<br> Valor = %{y}<extra></extra>',
+            hovertemplate='Data : %{x}<br>Valor : %{y}<extra></extra>',
             line=dict(color='royalblue')
 
         )
@@ -58,13 +58,13 @@ def LinePlotPedidos(data):
             x=data['data'].iloc[9:], 
             y=data['pedidos'].rolling(10).mean().dropna(),
             name = 'Média Móvel',
-            hovertemplate='Média Móvel<br>Data = %{x}<br> Valor = %{y}<extra></extra>',
+            hovertemplate='Data : %{x}<br>Valor : %{y}<extra></extra>',
             line=dict(
                 color='tomato',
                 width=4,
                 dash='dot'
             )
-            )
+        )
     )
     fig.update_layout(
         title = dict(
@@ -107,17 +107,15 @@ def LinePlotPedidos(data):
         plot_bgcolor="rgba(0,0,0,0)",
         template='simple_white',
 
-
-
     )
 
     fig.update_traces(
-           hoverlabel=dict(
-                font = dict(
-                     family = 'Arial', 
-                     size   = 15, 
-                     color  = 'black'),
-                align = 'left',
+        hoverlabel=dict(
+            font = dict(
+                family = 'Arial', 
+                size   = 14, 
+                color  = 'black'),
+            align = 'left',
         ))
     return fig
 
@@ -134,7 +132,7 @@ def PiePlot(data):
     )
     fig.update_traces(
         textinfo='percent',
-        hovertemplate='<br>%{text}<br>%{customdata}<br>%{value}<br>%{percent}<extra></extra>',
+        hovertemplate='<br>%{customdata}<br>%{value}(%{percent})<extra></extra>',
 
         marker = dict(
             colors = sea.color_palette(palette='pastel', n_colors=10)
@@ -170,7 +168,8 @@ def Top10Categoria(data):
             x = data['tota_receita'][::-1],
             y = data['product_category_name'][::-1],
             text =data['tota_receita'][::-1].apply(lambda x: humanize.intword(x, "%0.2f").replace('thousand','mil') if 'thousand' in humanize.intword(x, "%0.3f") else  humanize.intword(x, "%0.2f")), 
-            orientation='h'
+            orientation='h',
+            customdata=data['tota_receita'][::-1],
         )
     )
 
@@ -180,7 +179,7 @@ def Top10Categoria(data):
         marker = dict(
             color = ['lightblue']*7 + ['royalblue']*3
         ),
-        hovertemplate="%{x}<br>%{y}<extra></extra>"
+        hovertemplate="%{customdata}<br>%{y}<extra></extra>"
     )
     fig.update_layout(
         title = dict(
@@ -275,7 +274,8 @@ def plotSemanas(ano2017, ano2018):
         )
     ])
     fig.update_traces(
-        textposition='inside'
+        textposition='outside',
+        cliponaxis=False
     )
     fig.update_layout(
         barmode='stack',
@@ -301,7 +301,7 @@ def plotSemanas(ano2017, ano2018):
                 color='black'
             )
         ),
-        margin=dict(l=5, r=5, t=50, b=20),
+        margin=dict(l=10, r=10, t=50, b=20),
         template='simple_white',
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0, 0,0,0)', 
