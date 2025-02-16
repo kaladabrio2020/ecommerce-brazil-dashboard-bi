@@ -30,6 +30,7 @@ J√° foi concluido, proxima ideia e pegar outro conj. dados mas fazer uma aplica√
 </div>
 
 ### Video
+[video](https://github.com/user-attachments/assets/f2f076c2-a982-400d-b254-d85daa9a5edf)
 
 
 ## Tecnologia
