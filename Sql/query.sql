@@ -41,13 +41,14 @@ CROSS JOIN soma s;
 -- 
 
 ---
-select date_part('year', DATE(oli.shipping_limit_date)) AS ano , SUM(oop.payment_value) AS receita from olist_order AS olo
+select DATE(olo.order_purchase_timestamp) AS ano , SUM(oop.payment_value) AS receita from olist_order AS olo
     INNER JOIN olist_order_items AS oli
         ON oli.order_id = olo.order_id
     INNER JOIN olist_order_payments AS oop 
         ON oop.order_id = olo.order_id
-    WHERE olo.status_ = 'ok'
-        GROUP BY ano LIMIT 3;
+    WHERE olo.status_ = 'ok' AND date_part('year', DATE(oli.shipping_limit_date)) < 2020
+        GROUP BY ano
+        ORDER BY ano ASC;
 
 ---Receita total 
 select SUM(oop.payment_value) AS receita from olist_order AS olo
@@ -109,3 +110,23 @@ SELECT opp.product_category_name, SUM(result_) AS tota_receita FROM olist_order 
         date_part('year', olo.order_purchase_timestamp) <= 2018
     GROUP BY opp.product_category_name  
     ORDER BY tota_receita DESC LIMIT 10;
+
+
+SELECT geolocation_state, COUNT(ols.customer_id) FROM olist_customers AS ols
+    INNER JOIN olist_geolocation AS olg
+        ON ols.customer_zip_code_prefix = olg.geolocation_zip_code_prefix
+    GROUP BY geolocation_state;
+
+SELECT DISTINCT geolocation_zip_code_prefix FROM olist_geolocation;
+SELECT * FROM olist_customers;
+
+
+----- Dias com mais vendas
+select DATE(olo.order_purchase_timestamp) AS ano , COUNT(oop.payment_value) AS quantidade_vendas from olist_order AS olo
+    INNER JOIN olist_order_items AS oli
+        ON oli.order_id = olo.order_id
+    INNER JOIN olist_order_payments AS oop 
+        ON oop.order_id = olo.order_id
+    WHERE olo.status_ = 'ok' AND date_part('year', DATE(oli.shipping_limit_date)) < 2020
+        GROUP BY ano
+        ORDER BY ano ASC;

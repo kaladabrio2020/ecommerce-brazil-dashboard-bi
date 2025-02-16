@@ -25,7 +25,12 @@ produto , receita , vendendor, cliente = Melhores()
 seriePedidos = SerieHistoricaPedidos()
 pizzaSeller  = pieVendendor() 
 topCategoria = Top10Categorias()
-#----------
+# map
+clientes = DistribuicaoCliente()
+
+# barplot
+ano2017, ano2018 = VendasSemanas()
+
 
 app.layout = [
     html.Link(rel="stylesheet", href='assets\\style.css'),
@@ -49,7 +54,7 @@ app.layout = [
                 dbcc.Card([
                     dbcc.CardHeader("Estado com maior número de vendedor", className='pText'),
                     dbcc.CardBody([
-                        html.H2(humanize.intword(data.get(vendendor[0], 'oi'))),
+                        html.H2(humanize.intword(data.get(vendendor[0], 'oi'), "%0.3f")),
                     ]),
             ]),  className='textDiv2')
             ,
@@ -57,7 +62,7 @@ app.layout = [
                 dbcc.Card([
                     dbcc.CardHeader("Estado com maior número de clientes", className='pText'),
                     dbcc.CardBody([
-                        html.H2(humanize.intword(data.get(cliente[0], 'oi'))),
+                        html.H2(humanize.intword(data.get(cliente[0], 'oi'), "%0.3f")),
                     ]),
 
             ]),  className='textDiv2')
@@ -66,10 +71,16 @@ app.layout = [
         html.Div(
             html.Div([
                 html.Div(dcc.Graph(figure=LinePlotPedidos(seriePedidos), className='Graph1'), className='DivGraph1'),
-                html.Div(dcc.Graph(figure=PiePlot(pizzaSeller),          className='Graph1'), className='DivGraph2'),
+                html.Div([
+                        dcc.Graph(figure=PiePlot(pizzaSeller), className='Graph1'),
+                    ], className='DivGraph2'),
                 html.Div(dcc.Graph(figure=Top10Categoria(topCategoria),  className='Graph1'), className='DivGraph3')
-            ], className='DivMainPlots')
+            ], className='DivMainPlots'),
         ),
+        html.Div([
+            html.Div(dcc.Graph(figure=plotSemanas(ano2017, ano2018), className='Graph1'), className='DivGraph4'),
+            html.Div(dcc.Graph(figure=plotMaps(clientes), className='GraphMap'), className='DivGraphMaps'),
+        ], className='DivMainPlots'),
 
     ])
 
@@ -78,6 +89,7 @@ app.layout = [
 
 
 if __name__ == '__main__':
+
     locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
     humanize.i18n.activate("pt_BR")
     

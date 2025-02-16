@@ -1,4 +1,5 @@
 import json
+import geobr
 import numpy as np
 import pandas as pd
 import psycopg2 as pg
@@ -110,3 +111,54 @@ def Top10Categorias(end=2016, start=2018):
     data  = pd.read_sql_query(sql=query['receitaCategoria'], con=con)
 
     return data
+
+def DistribuicaoCliente():
+    brazil = geobr.read_state(year=2010, simplified=True)
+
+    with open('backend\\queries.json') as file:
+        data = json.load(file)
+
+    query = data["queries"]
+
+    data  = pd.read_sql_query(sql=query['distribuicaoClientes'], con=con)
+    
+    return pd.merge(brazil, data, how='left', left_on='abbrev_state', right_on='geolocation_state').fillna(0)
+
+
+
+def VendasSemanas():
+    with open('backend\\queries.json', 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    query = data['queries']
+    # Lendo as semanas
+    data  = pd.read_sql_query(sql=query["Semanas"], con=con)
+    
+    data['ano'] = pd.to_datetime(data['ano'])
+    # Renomeando as semanas
+    data['semana'] = data['ano'].dt.day_name('pt').apply(lambda x:x.replace('\udce7','ç').replace('\udce1','á'))
+    
+    # Pegando apenas o ano
+    data['ano'] = data['ano'].dt.year
+    
+    # Ordenando as semanas
+    ordem = pd.CategoricalDtype(
+        categories=["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"], 
+    ordered=True)
+    
+    # 
+    data = data.loc[data['ano'] != 2016].groupby(['ano', 'semana'])['quantidade_vendas'].sum().reset_index()
+
+    #
+    pd.options.mode.copy_on_write = True 
+
+    ano2018 = data.loc[data['ano'] == 2018]
+    ano2018 = data.iloc[
+        ano2018['semana'].astype(ordem).sort_values().index, :
+    ]
+
+    ano2017 = data.loc[data['ano'] == 2017]
+    ano2017 = data.iloc[
+        ano2017['semana'].astype(ordem).sort_values().index, :
+    ]
+
+    return (ano2017, ano2018)
