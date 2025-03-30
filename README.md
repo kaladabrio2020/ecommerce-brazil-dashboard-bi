@@ -1,4 +1,4 @@
-# ecommerce-brazil-dashboard-bi
+# Ecommerce  Brazil Dashboard Plotly Dash
 
 ## Sobre
 Este é um conjunto de dados público de pedidos do e-commerce brasileiro feitos na loja Olist. O conjunto de dados contém informações de 100 mil pedidos de 2016 a 2018 feitos em diversos marketplaces no Brasil.
@@ -25,12 +25,8 @@ Já foi concluido, proxima ideia e pegar outro conj. dados mas fazer uma aplica�
 
 ## Overview
 
-<div align='center'>
-    <img src="/img/imgStatic.png">
-</div>
-
 ### Video
-[video](https://github.com/user-attachments/assets/f2f076c2-a982-400d-b254-d85daa9a5edf)
+[video](https://github.com/user-attachments/assets/9419444d-869c-45f5-86fa-bfc2df6f8afa)
 
 
 ## Tecnologia
